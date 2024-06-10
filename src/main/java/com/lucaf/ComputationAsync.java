@@ -3,6 +3,7 @@ package com.lucaf;
 import com.lucaf.datatypes.Response;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 /**
  * Class to handle the computation requests asynchronously
@@ -17,16 +18,16 @@ public class ComputationAsync implements Runnable{
     /**
      * Events of the computation
      */
-    private final ComputationAsyncEvents computationAsyncEvents;
+    private final ComputationListener computationListener;
 
     /**
      * Constructor to set the computation and the events
      * @param computation computation to run
-     * @param computationAsyncEvents events of the computation
+     * @param computationListener events of the computation
      */
-    public ComputationAsync(Callable<Response> computation, ComputationAsyncEvents computationAsyncEvents) {
+    public ComputationAsync(Callable<Response> computation, ComputationListener computationListener) {
         this.computation = computation;
-        this.computationAsyncEvents = computationAsyncEvents;
+        this.computationListener = computationListener;
     }
 
     /**
@@ -36,10 +37,11 @@ public class ComputationAsync implements Runnable{
     public void run() {
         Response response = null;
         try {
-            response = computation.call();
-            computationAsyncEvents.onComputationAsyncComplete(response);
+            Future<Response> future = Config.executorService.submit(computation);
+            response = future.get();
+            computationListener.onComputationAsyncComplete(response);
         } catch (Exception e) {
-            computationAsyncEvents.onComputationAsyncError(e);
+            computationListener.onComputationAsyncError(e);
         }
     }
 }

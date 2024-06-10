@@ -5,7 +5,7 @@ import com.lucaf.datatypes.Response;
 /**
  * Interface to handle the events of the StatsAsync class
  */
-public interface StatsAsyncEvents {
+public interface StatsListener {
 
     /**
      * Method to handle the completion of the StatsAsync class

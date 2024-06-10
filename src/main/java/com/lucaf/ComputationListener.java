@@ -5,7 +5,7 @@ import com.lucaf.datatypes.Response;
 /**
  * Interface to handle the events of the Computation execution
  */
-public interface ComputationAsyncEvents {
+public interface ComputationListener {
 
     /**
      * Method to handle the completion of the computation

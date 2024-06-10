@@ -16,7 +16,7 @@ public class Tokens {
     /**
      * Regex for the variables
      */
-    public static String variableRegex = "[a-zA-Z]+[0-9]+";
+    public static String variableRegex = "[a-zA-Z]+[0-9]?+";
 
     /**
      * Regex for the numbers

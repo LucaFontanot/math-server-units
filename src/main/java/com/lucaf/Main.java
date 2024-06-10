@@ -1,5 +1,7 @@
 package com.lucaf;
 
+import java.util.concurrent.Executors;
+
 /**
  * Main class to start the server
  */
@@ -14,6 +16,7 @@ public class Main {
         if (args.length > 0) {
             Config.port = Integer.parseInt(args[0]);
         }
+        Config.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         TCPServer tcpServer = new TCPServer(Config.port);
         tcpServer.start();
     }

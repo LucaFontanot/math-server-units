@@ -11,9 +11,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * TCP message class as a thread
+ * Class for handling the communication with the client
  */
-public class TCPMessage extends Thread {
+public class ClientHandler extends Thread {
 
     /**
      * Socket to communicate with the client
@@ -29,7 +29,7 @@ public class TCPMessage extends Thread {
      *
      * @param socket socket to communicate with the client
      */
-    public TCPMessage(Socket socket) {
+    public ClientHandler(Socket socket) {
         this.socket = socket;
         this.executorService = Executors.newSingleThreadExecutor();
 
@@ -132,7 +132,7 @@ public class TCPMessage extends Thread {
      * @return computation async object
      */
     private ComputationAsync getComputationAsync(Computation computation, long millis) {
-        return new ComputationAsync(computation, new ComputationAsyncEvents() {
+        return new ComputationAsync(computation, new ComputationListener() {
             @Override
             public void onComputationAsyncComplete(Response response) {
                 if (response.isOk()) {
@@ -157,7 +157,7 @@ public class TCPMessage extends Thread {
      * @return stats async object@
      */
     private StatsAsync getStatsAsync(Stats stats, long millis) {
-        return new StatsAsync(stats, new StatsAsyncEvents() {
+        return new StatsAsync(stats, new StatsListener() {
             @Override
             public void onStatsAsyncComplete(Response response) {
                 response.setTime(System.currentTimeMillis() - millis);

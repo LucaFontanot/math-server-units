@@ -36,7 +36,7 @@ public class TCPServer extends Thread {
             System.out.println("TCP server started on port " + port);
             while (true) {
                 Socket socket = serverSocket.accept();
-                TCPMessage tcpMessagging = new TCPMessage(socket);
+                ClientHandler tcpMessagging = new ClientHandler(socket);
                 tcpMessagging.start();
             }
         } catch (IOException e) {

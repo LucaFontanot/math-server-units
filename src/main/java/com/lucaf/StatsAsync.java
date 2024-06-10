@@ -3,6 +3,7 @@ package com.lucaf;
 import com.lucaf.datatypes.Response;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 /**
  * Class to handle the statistics requests asynchronously
@@ -12,7 +13,7 @@ public class StatsAsync implements Runnable {
     /**
      * StatsAsyncEvents to handle the events of the StatsAsync class
      */
-    private final StatsAsyncEvents statsAsyncEvents;
+    private final StatsListener statsListener;
 
     /**
      * Callable to get the statistics
@@ -23,10 +24,10 @@ public class StatsAsync implements Runnable {
      * Constructor to initialize the StatsAsync class with the Callable to get the statistics and the StatsAsyncEvents to handle the events
      *
      * @param stats            Callable to get the statistics
-     * @param statsAsyncEvents StatsAsyncEvents to handle the events of the StatsAsync class
+     * @param statsListener StatsAsyncEvents to handle the events of the StatsAsync class
      */
-    public StatsAsync(Callable<Response> stats, StatsAsyncEvents statsAsyncEvents) {
-        this.statsAsyncEvents = statsAsyncEvents;
+    public StatsAsync(Callable<Response> stats, StatsListener statsListener) {
+        this.statsListener = statsListener;
         this.stats = stats;
     }
 
@@ -37,10 +38,11 @@ public class StatsAsync implements Runnable {
     public void run() {
         Response response = null;
         try {
-            response = stats.call();
-            statsAsyncEvents.onStatsAsyncComplete(response);
+            Future<Response> future = Config.executorService.submit(stats);
+            response = future.get();
+            statsListener.onStatsAsyncComplete(response);
         } catch (Exception e) {
-            statsAsyncEvents.onStatsAsyncError(e);
+            statsListener.onStatsAsyncError(e);
         }
     }
 }
